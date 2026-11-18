@@ -232,6 +232,43 @@ h1 em {
 h2 { font-size: clamp(2.1rem, 4.6vw, 3.3rem); max-width: 22ch; }
 .section-lede { margin-top: 1.2rem; color: var(--muted); font-size: 1.15rem; max-width: 40rem; }
 
+/* Install */
+.install { padding: clamp(3rem, 6vw, 4.5rem) 0; }
+.install-inner { display: grid; gap: 2rem; align-items: center; }
+@media (min-width: 62rem) { .install-inner { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 4rem; } }
+.install h2 { font-size: clamp(1.9rem, 3.6vw, 2.6rem); }
+.install .section-lede { font-size: 1.05rem; }
+.install-more { margin-top: 1.2rem; }
+.tabbox {
+  min-width: 0; background: var(--term-bg); color: var(--term-ink);
+  border: 1px solid var(--term-rule); border-radius: 0.9rem;
+  box-shadow: 0 30px 80px -40px var(--glow-2), var(--shadow);
+}
+.tablist { display: none; gap: 0.25rem; padding: 0.5rem 0.5rem 0; border-bottom: 1px solid var(--term-rule); overflow-x: auto; }
+.js .tablist { display: flex; }
+.tablist button {
+  font: 600 0.85rem var(--sans); color: var(--term-dim); background: none; border: 0; cursor: pointer; white-space: nowrap;
+  padding: 0.6rem 0.7rem; border-radius: 0.5rem 0.5rem 0 0; border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.tablist button:hover { color: var(--term-ink); }
+.tablist button[aria-selected='true'] { color: var(--term-accent); border-bottom-color: var(--term-accent); }
+.panel { position: relative; padding: 1.1rem 1.25rem 1.2rem; }
+.panel + .panel { border-top: 1px solid var(--term-rule); }
+.js .panel + .panel { border-top: 0; }
+.panel h3 { font-size: 0.85rem; font-weight: 600; color: var(--term-accent); margin: 0 0 0.6rem; }
+.js .panel h3 { display: none; }
+.panel pre { margin: 0; overflow-x: auto; font-size: clamp(0.72rem, 1.4vw, 0.82rem); line-height: 1.8; padding-bottom: 0.4rem; }
+.panel code { font-size: inherit; }
+.panel-note { margin-top: 0.8rem; font-size: 0.85rem; color: var(--term-dim); }
+.js .panel-note { padding-right: 4.5rem; min-height: 2rem; }
+.panel-note a { color: var(--term-accent); }
+.copy {
+  position: absolute; bottom: 1.1rem; right: 1rem;
+  font: 600 0.72rem var(--sans); color: var(--term-dim); background: var(--term-bg);
+  border: 1px solid var(--term-rule); border-radius: 0.45rem; padding: 0.35rem 0.65rem; cursor: pointer;
+}
+.copy:hover { color: var(--term-ink); border-color: var(--term-accent); }
+
 /* Feature cards */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 1rem; margin-top: 3rem; }
 .card, .meter, .link-card, .status {

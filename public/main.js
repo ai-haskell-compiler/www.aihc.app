@@ -78,3 +78,55 @@ if (term && !calm) {
   };
   play();
 }
+
+// Install tabs: pick the visitor's platform, add copy buttons.
+for (const box of document.querySelectorAll('[data-tabs]')) {
+  const tabs = [...box.querySelectorAll('[role="tab"]')];
+  const select = (tab, focus) => {
+    for (const other of tabs) {
+      const on = other === tab;
+      other.setAttribute('aria-selected', on);
+      other.tabIndex = on ? 0 : -1;
+      document.getElementById(other.getAttribute('aria-controls')).hidden = !on;
+    }
+    if (focus) tab.focus();
+  };
+  const platform = (navigator.userAgentData?.platform || navigator.platform || '').toLowerCase();
+  const os = platform.includes('mac') ? 'mac' : platform.includes('linux') ? 'linux' : null;
+  select(tabs.find(tab => tab.dataset.os === os) || tabs[0]);
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', event => {
+      const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
+      if (step) select(tabs[(i + step + tabs.length) % tabs.length], true);
+    });
+  });
+  if (navigator.clipboard) {
+    for (const panel of box.querySelectorAll('.panel')) {
+      const button = document.createElement('button');
+      button.className = 'copy';
+      button.type = 'button';
+      button.textContent = 'Copy';
+      button.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(panel.querySelector('pre').textContent.trim() + '\n');
+        button.textContent = 'Copied';
+        setTimeout(() => { button.textContent = 'Copy'; }, 1600);
+      });
+      panel.prepend(button);
+    }
+  }
+}
+
+// Show the newest release in the download commands. The page ships with a known-good version.
+const versions = document.querySelectorAll('[data-version]');
+if (versions.length) {
+  fetch('https://api.github.com/repos/ai-haskell-compiler/aihc/releases/latest', { headers: { Accept: 'application/vnd.github+json' } })
+    .then(response => (response.ok ? response.json() : Promise.reject()))
+    .then(release => {
+      const version = String(release.tag_name).replace(/^v/, '');
+      const names = new Set((release.assets || []).map(asset => asset.name));
+      const complete = ['apple-arm64', 'linux-amd64'].every(target => names.has(`aihc-${version}-${target}.tar.gz`));
+      if (/^\d+(\.\d+)+$/.test(version) && complete) versions.forEach(el => { el.textContent = version; });
+    })
+    .catch(() => {});
+}

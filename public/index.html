@@ -38,6 +38,7 @@
       <span class="brand-name">AI Haskell Compiler</span>
     </a>
     <nav aria-label="Primary">
+      <a href="#install">Install</a>
       <a href="#features">Features</a>
       <a href="#performance">Performance</a>
       <a href="#resources">Resources</a>
@@ -60,8 +61,9 @@
       <h1>A Haskell compiler, <em>written by AI.</em></h1>
       <p class="lede">AIHC is a modern, self-hosting Haskell compiler. It targets native machine code, LLVM IR and WebAssembly.</p>
       <div class="cta">
-        <a class="btn btn-primary" href="https://docs.aihc.app/">Read the manual</a>
-        <a class="btn btn-ghost" href="https://github.com/ai-haskell-compiler/aihc">View the source <span aria-hidden="true">↗</span></a>
+        <a class="btn btn-primary" href="#install">Install AIHC</a>
+        <a class="btn btn-ghost" href="https://docs.aihc.app/">Read the manual</a>
+        <a class="btn btn-ghost" href="https://github.com/ai-haskell-compiler/aihc">Source <span aria-hidden="true">↗</span></a>
       </div>
     </div>
 
@@ -75,6 +77,57 @@
 <span class="t-line"><span class="t-prompt">%</span> <span class="t-cmd" data-type>./examples/hello-world/Main</span></span>
 <span class="t-line t-out t-hello">Hello, world!</span>
 <span class="t-line t-last"><span class="t-prompt">%</span> <span class="t-caret"></span></span></code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt install" id="install">
+  <div class="wrap install-inner">
+    <div class="install-copy">
+      <p class="kicker reveal">Install</p>
+      <h2 class="reveal">Get the compiler, <em>three ways.</em></h2>
+      <p class="section-lede reveal">Download a release binary, install an RPM, or build from source. The binaries are compiled by AIHC itself and need nothing else.</p>
+      <p class="install-more reveal"><a class="arrow-link" href="https://github.com/ai-haskell-compiler/aihc/releases">All releases <span aria-hidden="true">→</span></a></p>
+    </div>
+
+    <div class="tabbox reveal" data-tabs>
+      <div class="tablist" role="tablist" aria-label="Install method">
+        <button role="tab" id="tab-macos" aria-controls="panel-macos" data-os="mac">macOS</button>
+        <button role="tab" id="tab-linux" aria-controls="panel-linux" data-os="linux">Linux</button>
+        <button role="tab" id="tab-fedora" aria-controls="panel-fedora">Fedora</button>
+        <button role="tab" id="tab-source" aria-controls="panel-source">From source</button>
+      </div>
+
+      <div class="panel" role="tabpanel" id="panel-macos" aria-labelledby="tab-macos">
+        <h3>macOS</h3>
+        <pre><code>curl -L https://github.com/ai-haskell-compiler/aihc/releases/download/v<span data-version>0.2.0</span>/aihc-<span data-version>0.2.0</span>-apple-arm64.tar.gz | tar -xz
+sudo install aihc-<span data-version>0.2.0</span>-apple-arm64/aihc /usr/local/bin/aihc</code></pre>
+        <p class="panel-note">Release binary for Apple silicon. The core libraries are embedded in the executable.</p>
+      </div>
+
+      <div class="panel" role="tabpanel" id="panel-linux" aria-labelledby="tab-linux">
+        <h3>Linux</h3>
+        <pre><code>curl -L https://github.com/ai-haskell-compiler/aihc/releases/download/v<span data-version>0.2.0</span>/aihc-<span data-version>0.2.0</span>-linux-amd64.tar.gz | tar -xz
+sudo install aihc-<span data-version>0.2.0</span>-linux-amd64/aihc /usr/local/bin/aihc</code></pre>
+        <p class="panel-note">Release binary for x86-64. The core libraries are embedded in the executable.</p>
+      </div>
+
+      <div class="panel" role="tabpanel" id="panel-fedora" aria-labelledby="tab-fedora">
+        <h3>Fedora</h3>
+        <pre><code>sudo dnf copr enable petersen/aihc
+sudo dnf install aihc</code></pre>
+        <p class="panel-note">RPMs for Fedora and EPEL from the <a href="https://copr.fedorainfracloud.org/coprs/petersen/aihc/">petersen/aihc Copr</a>.</p>
+      </div>
+
+      <div class="panel" role="tabpanel" id="panel-source" aria-labelledby="tab-source">
+        <h3>From source</h3>
+        <pre><code>git clone https://github.com/ai-haskell-compiler/aihc.git
+cd aihc
+nix develop
+cabal build exe:aihc
+cabal list-bin exe:aihc</code></pre>
+        <p class="panel-note">Needs <a href="https://nixos.org/download/">Nix</a> with flakes enabled. The flake provides GHC, Cabal and Clang, and the last command prints the path of the executable.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -248,12 +301,12 @@
 <section class="section closing">
   <div class="wrap closing-inner reveal">
     <h2>Try it on <em>your own code.</em></h2>
-    <p>Clone the repository, build the compiler and run the hello-world example. The user guide has the full instructions.</p>
-    <pre class="snippet"><code><span class="t-prompt">%</span> git clone https://github.com/ai-haskell-compiler/aihc
-<span class="t-prompt">%</span> cd aihc
-<span class="t-prompt">%</span> cabal run exe:aihc -- build examples/hello-world/Main.hs</code></pre>
+    <p>Point <code>aihc build</code> at a module, a package directory or a Hackage package name. The user guide has the full instructions.</p>
+    <pre class="snippet"><code><span class="t-prompt">%</span> aihc build Main.hs --output hello
+<span class="t-prompt">%</span> ./hello</code></pre>
     <div class="cta">
-      <a class="btn btn-primary" href="https://docs.aihc.app/">Get started</a>
+      <a class="btn btn-primary" href="#install">Install AIHC</a>
+      <a class="btn btn-ghost" href="https://docs.aihc.app/">Read the manual</a>
       <a class="btn btn-ghost" href="https://blog.aihc.app/">Read the journal</a>
     </div>
   </div>
