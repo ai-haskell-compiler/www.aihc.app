@@ -130,3 +130,27 @@ if (versions.length) {
     })
     .catch(() => {});
 }
+
+// Theme switch. The inline script in the page head has already set data-theme.
+const root = document.documentElement;
+const system = matchMedia('(prefers-color-scheme: dark)');
+const stored = () => {
+  try { return localStorage.getItem('theme'); } catch { return null; }
+};
+const applyTheme = theme => {
+  root.dataset.theme = theme;
+  const colour = theme === 'dark' ? '#151318' : '#faf8f3';
+  document.querySelectorAll('meta[name="theme-color"]').forEach(meta => { meta.content = colour; });
+};
+applyTheme(root.dataset.theme);
+for (const button of document.querySelectorAll('[data-theme-toggle]')) {
+  button.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    try { localStorage.setItem('theme', next); } catch {}
+  });
+}
+// Follow the system until the visitor has chosen a theme.
+system.addEventListener('change', event => {
+  if (!stored()) applyTheme(event.matches ? 'dark' : 'light');
+});
