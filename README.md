@@ -8,7 +8,7 @@ It introduces AIHC and links to the manual, the journal, the benchmarks and the 
 | Path | Content |
 | --- | --- |
 | `public/` | The site: plain HTML, CSS and JavaScript. There is no build step. |
-| `src/worker.js` | Serves `public/` and redirects `www.aihc.app` to `aihc.app`. |
+| `src/worker.js` | Serves `public/` and redirects `www.aihc.app` and plain HTTP to `https://aihc.app`. |
 | `wrangler.jsonc` | The Cloudflare Worker configuration and its two custom domains. |
 
 The colors and fonts match blog.aihc.app, perf.aihc.app and docs.aihc.app.

@@ -1,8 +1,11 @@
-// Serves the static site and sends www.aihc.app to aihc.app.
+// Serves the static site. Sends www.aihc.app and plain HTTP to https://aihc.app.
+const HOSTS = new Set(['aihc.app', 'www.aihc.app']);
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    if (url.hostname === 'www.aihc.app') {
+    // Other hostnames (local previews, workers.dev) are served as they are.
+    if (HOSTS.has(url.hostname) && (url.hostname !== 'aihc.app' || url.protocol !== 'https:')) {
       url.hostname = 'aihc.app';
       url.protocol = 'https:';
       url.port = '';
