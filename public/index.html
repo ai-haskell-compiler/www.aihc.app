@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIHC · The AI-written Haskell compiler</title>
+<meta name="description" content="AIHC is a Haskell compiler written by AI agents under human direction. It compiles GHC-flavoured Haskell to native code, LLVM IR and WebAssembly, and it compiles itself.">
+<link rel="canonical" href="https://aihc.app/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aihc.app/">
+<meta property="og:title" content="AIHC · The AI-written Haskell compiler">
+<meta property="og:description" content="A Haskell compiler designed by a human and typed by robots. Native, LLVM and WebAssembly backends. Self-hosting.">
+<meta name="theme-color" content="#151318" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#faf8f3" media="(prefers-color-scheme: light)">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/newsreader-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/style.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="/" aria-label="AI Haskell Compiler, home">
+      <span class="brand-mark">
+        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+          <defs><clipPath id="mark-clip"><polygon points="18,18 62,18 40,88"/></clipPath></defs>
+          <g fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M24 54 Q40 36 56 54" clip-path="url(#mark-clip)" stroke-linecap="butt"/>
+            <path d="M18 18 L40 88 L62 18"/>
+            <path d="M64 88 L79.1 40"/>
+            <circle cx="86" cy="18" r="6" fill="currentColor" stroke="none"/>
+          </g>
+        </svg>
+      </span>
+      <span class="brand-name">AI Haskell Compiler</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#performance">Performance</a>
+      <a href="#resources">Resources</a>
+      <a class="nav-gh" href="https://github.com/ai-haskell-compiler/aihc">GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="content">
+
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="blob blob-a"></div>
+    <div class="blob blob-b"></div>
+    <div class="grid"></div>
+  </div>
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>Self-hosting since 2026</p>
+      <h1>A Haskell compiler, <em>written by AI.</em></h1>
+      <p class="lede">AIHC compiles the Haskell that Hackage is written in to native machine code, LLVM IR and WebAssembly. It is designed by a human and typed by robots, and it already compiles itself.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://docs.aihc.app/">Read the manual</a>
+        <a class="btn btn-ghost" href="https://github.com/ai-haskell-compiler/aihc">View the source <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+
+    <div class="terminal" role="img" aria-label="Terminal session: aihc builds the hello-world example in 0.2 seconds, and the program prints Hello, world!">
+      <div class="terminal-bar" aria-hidden="true"><i></i><i></i><i></i><span>aihc</span></div>
+      <pre aria-hidden="true"><code id="term"><span class="t-line"><span class="t-prompt">%</span> <span class="t-cmd" data-type>aihc build examples/hello-world/Main.hs</span></span>
+<span class="t-line t-out">Plan: 3 packages, 1 executable</span>
+<span class="t-line t-out t-dim">  aihc-rts-1.0.2  aihc-prim-0.13.0  aihc-base-4.21.2.0</span>
+<span class="t-line t-out"><span class="t-ok">✔</span> Main (executable)  2 modules  <span class="t-accent">0.2 s</span></span>
+<span class="t-line t-out t-dim">executable: examples/hello-world/Main</span>
+<span class="t-line"><span class="t-prompt">%</span> <span class="t-cmd" data-type>./examples/hello-world/Main</span></span>
+<span class="t-line t-out t-hello">Hello, world!</span>
+<span class="t-line t-last"><span class="t-prompt">%</span> <span class="t-caret"></span></span></code></pre>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="features">
+  <div class="wrap">
+    <p class="kicker reveal">Features</p>
+    <h2 class="reveal">Built to run the Haskell <em>people actually write.</em></h2>
+    <p class="section-lede reveal">Three goals, in priority order: compatible with GHC, faster where GHC is slow by design, and reusable piece by piece.</p>
+
+    <div class="cards">
+      <article class="card reveal">
+        <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7l8-4 8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4"/><path d="M4 17l8 4 8-4"/></svg></div>
+        <h3>GHC-compatible</h3>
+        <p>Not Haskell 2010 plus a few extras. AIHC accepts GHC's extensions and ships the <code>GHC.*</code> modules that Hackage packages expect. It builds <code>aeson</code>, <code>text</code>, <code>containers</code> and <code>vector</code>.</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4v16M12 4v16M19 4v16"/><path d="M2 8h6M9 14h6M16 9h6"/></svg></div>
+        <h3>Parallel by default</h3>
+        <p>Parsing, name resolution, type checking and code generation are scheduled over every core. The 54 modules of <code>text</code> build in 3.2 seconds, against 28.0 for GHC at <code>-O0</code>.</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></div>
+        <h3>Whole-program optimization</h3>
+        <p>GHC optimizes one module at a time. AIHC sees the whole program before it generates code, which is how its <code>-Os</code> binaries come out a tenth of the size.</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v6M12 9l-7 6M12 9l7 6M12 9v6"/><circle cx="5" cy="18" r="2.5"/><circle cx="12" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/></svg></div>
+        <h3>Three backends</h3>
+        <p>Native machine code for AMD64 and ARM64, LLVM IR, and wasm32. One middle end, one runtime and one garbage collector serve all three.</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 4v5h-5"/></svg></div>
+        <h3>Self-hosting</h3>
+        <p>AIHC compiles AIHC. The compiler it produces compiles itself again, and the two executables are identical, byte for byte.</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M7 7h.01M7 17h.01"/></svg></div>
+        <h3>Owns every stage</h3>
+        <p>Its own preprocessor, parser, type checker, optimizer, object emitter and runtime. No stage shells out to a tool it cannot change, so no bottleneck is out of reach.</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 18c3 0 3-12 6-12s3 12 6 12 3-6 4-6"/></svg></div>
+        <h3>A real runtime</h3>
+        <p>A generational, incremental garbage collector with bounded pauses. Green threads that run in parallel. Software transactional memory.</p>
+      </article>
+      <article class="card reveal">
+        <div class="icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+        <h3>Reusable libraries</h3>
+        <p>The compiler is a set of packages: <code>aihc-cpp</code>, <code>aihc-parser</code>, <code>aihc-resolve</code>, <code>aihc-tc</code> and more. Each is meant to be useful without the rest.</p>
+      </article>
+    </div>
+
+    <div class="pipeline-box reveal">
+      <p class="pipeline-title">From source to machine code, without leaving the building</p>
+      <ol class="pipeline">
+        <li><span>Preprocess</span><small>aihc-cpp</small></li>
+        <li><span>Parse</span><small>aihc-parser</small></li>
+        <li><span>Resolve</span><small>aihc-resolve</small></li>
+        <li><span>Type-check</span><small>aihc-tc</small></li>
+        <li><span>Desugar</span><small>System FC</small></li>
+        <li><span>Optimize</span><small>GRIN</small></li>
+        <li class="emit"><span>Emit</span><small>native · LLVM · wasm</small></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt" id="performance">
+  <div class="wrap">
+    <p class="kicker reveal">Performance</p>
+    <h2 class="reveal">Measured against GHC, <em>on every commit.</em></h2>
+    <p class="section-lede reveal">Each number is AIHC divided by GHC 9.14.1 for the same programs. Lower is better, and 1.00× is parity.</p>
+
+    <div class="meters">
+      <article class="meter reveal">
+        <p class="meter-label">Compile time <code>-O0</code></p>
+        <p class="meter-value"><span data-count="0.12">0.12</span><span class="x">×</span></p>
+        <div class="bars" aria-hidden="true">
+          <div class="bar bar-ghc"><span>GHC</span><i style="--w:100%"></i></div>
+          <div class="bar bar-aihc"><span>AIHC</span><i style="--w:12%"></i></div>
+        </div>
+        <p class="meter-note">About eight times faster to compile.</p>
+      </article>
+      <article class="meter reveal">
+        <p class="meter-label">Artifact size <code>-Os</code></p>
+        <p class="meter-value"><span data-count="0.10">0.10</span><span class="x">×</span></p>
+        <div class="bars" aria-hidden="true">
+          <div class="bar bar-ghc"><span>GHC</span><i style="--w:100%"></i></div>
+          <div class="bar bar-aihc"><span>AIHC</span><i style="--w:10%"></i></div>
+        </div>
+        <p class="meter-note">Executables a tenth of the size.</p>
+      </article>
+      <article class="meter reveal">
+        <p class="meter-label">Runtime <code>-O2</code></p>
+        <p class="meter-value"><span data-count="0.94">0.94</span><span class="x">×</span></p>
+        <div class="bars" aria-hidden="true">
+          <div class="bar bar-ghc"><span>GHC</span><i style="--w:100%"></i></div>
+          <div class="bar bar-aihc"><span>AIHC</span><i style="--w:94%"></i></div>
+        </div>
+        <p class="meter-note">Slightly ahead of GHC's optimized code.</p>
+      </article>
+    </div>
+
+    <p class="fineprint reveal">Native backend, geometric mean over 13 benchmarks on an Apple M4 Pro, 13 November 2026. GHC has no <code>-Os</code>, so sizes compare against GHC at <code>-O1</code>. The LLVM and Wasm backends, every machine and the full history are on <a href="https://perf.aihc.app/">perf.aihc.app</a>.</p>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="wrap split">
+    <div>
+      <p class="kicker reveal">How it's made</p>
+      <h2 class="reveal">Designed by a human. <em>Typed by robots.</em></h2>
+      <p class="reveal">A person holds the architecture and reviews every change. AI agents write the code: ChatGPT, Claude Opus and Qwen-Coder all contribute. They also write the tests, the benchmarks, the design documents and the blog.</p>
+      <p class="reveal">The first commit landed in March 2026. Seven months later the compiler built itself.</p>
+    </div>
+    <aside class="status reveal" aria-label="Project status">
+      <p class="status-head"><span class="pulse" aria-hidden="true"></span>Under construction</p>
+      <p>AIHC builds many Hackage packages, but not all of them. The <code>base</code> library is about half complete, and some language extensions are still missing.</p>
+      <p>The status tables in the README regenerate on every merge, so the numbers there are always current.</p>
+      <a class="arrow-link" href="https://github.com/ai-haskell-compiler/aihc#readme">See today's progress <span aria-hidden="true">→</span></a>
+    </aside>
+  </div>
+</section>
+
+<section class="section section-alt" id="resources">
+  <div class="wrap">
+    <p class="kicker reveal">Resources</p>
+    <h2 class="reveal">Everything AIHC, <em>in one place.</em></h2>
+
+    <div class="links">
+      <a class="link-card reveal" href="https://docs.aihc.app/">
+        <span class="link-host">docs.aihc.app</span>
+        <span class="link-title">The manual</span>
+        <span class="link-note">A user guide for building programs with <code>aihc</code>, and a developer manual for how it works inside.</span>
+      </a>
+      <a class="link-card reveal" href="https://lazy.aihc.app/">
+        <span class="link-host">lazy.aihc.app</span>
+        <span class="link-title">The Lazy Reader</span>
+        <span class="link-note">An illustrated guide for people who will not read the manual. The compiler runs in your browser.</span>
+      </a>
+      <a class="link-card reveal" href="https://blog.aihc.app/">
+        <span class="link-host">blog.aihc.app</span>
+        <span class="link-title">The journal</span>
+        <span class="link-note">Weekly highlights and occasional deep-dives, researched and written by AI.</span>
+      </a>
+      <a class="link-card reveal" href="https://perf.aihc.app/">
+        <span class="link-host">perf.aihc.app</span>
+        <span class="link-title">Benchmarks</span>
+        <span class="link-note">Compile time, artifact size and runtime against GHC, tracked across the commit history.</span>
+      </a>
+      <a class="link-card reveal" href="https://hackage.aihc.app/">
+        <span class="link-host">hackage.aihc.app</span>
+        <span class="link-title">Hackage, without a server</span>
+        <span class="link-note">A prototype package repository whose Haskell parts are compiled to WebAssembly by AIHC.</span>
+      </a>
+      <a class="link-card reveal" href="https://github.com/ai-haskell-compiler/aihc">
+        <span class="link-host">github.com</span>
+        <span class="link-title">Source code</span>
+        <span class="link-note">The compiler, its issues and its live progress counts. Released under the Unlicense.</span>
+      </a>
+      <a class="link-card reveal" href="https://discord.gg/uGWkhMCZrZ">
+        <span class="link-host">discord.gg</span>
+        <span class="link-title">Discord</span>
+        <span class="link-note">Chat with the people, and the occasional robot, behind AIHC.</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section closing">
+  <div class="wrap closing-inner reveal">
+    <h2>Try it on <em>your own code.</em></h2>
+    <p>Clone the repository, build the compiler and run the hello-world example. The user guide has the full instructions.</p>
+    <pre class="snippet"><code><span class="t-prompt">%</span> git clone https://github.com/ai-haskell-compiler/aihc
+<span class="t-prompt">%</span> cd aihc
+<span class="t-prompt">%</span> cabal run exe:aihc -- build examples/hello-world/Main.hs</code></pre>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://docs.aihc.app/">Get started</a>
+      <a class="btn btn-ghost" href="https://blog.aihc.app/">Read the journal</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <p>AI Haskell Compiler</p>
+    <nav aria-label="Footer">
+      <a href="https://docs.aihc.app/">Manual</a>
+      <a href="https://lazy.aihc.app/">Lazy Reader</a>
+      <a href="https://blog.aihc.app/">Journal</a>
+      <a href="https://perf.aihc.app/">Benchmarks</a>
+      <a href="https://hackage.aihc.app/">Hackage</a>
+      <a href="https://github.com/ai-haskell-compiler">GitHub</a>
+      <a href="https://discord.gg/uGWkhMCZrZ">Discord</a>
+    </nav>
+  </div>
+</footer>
+
+<script src="/main.js" defer></script>
+</body>
+</html>
