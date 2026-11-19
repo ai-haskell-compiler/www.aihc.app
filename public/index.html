@@ -179,6 +179,7 @@ cabal list-bin exe:aihc</code></pre>
         <button role="tab" id="tab-ex-lazy" aria-controls="panel-ex-lazy">Lazy lists</button>
         <button role="tab" id="tab-ex-gadts" aria-controls="panel-ex-gadts">GADTs</button>
         <button role="tab" id="tab-ex-threads" aria-controls="panel-ex-threads">Green threads</button>
+        <button role="tab" id="tab-ex-unboxed" aria-controls="panel-ex-unboxed">Unboxed types</button>
       </div>
       <div class="panel example" role="tabpanel" id="panel-ex-lazy" aria-labelledby="tab-ex-lazy" data-example="lazy">
         <h3>Lazy lists</h3>
@@ -291,6 +292,64 @@ main = <span class="h-k">do</span>
 <span class="t-prompt">%</span> ./threads
 <span class="example-stdout">[6765,10946,17711,28657,46368,75025]
 8 threads, 8000 updates, total 36000</span></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="panel example" role="tabpanel" id="panel-ex-unboxed" aria-labelledby="tab-ex-unboxed" data-example="unboxed">
+        <h3>Unboxed types</h3>
+        <div class="example-grid">
+          <pre class="example-code"><code><span class="h-p">{-# LANGUAGE DataKinds, MagicHash, PolyKinds, StandaloneKindSignatures #-}</span>
+<span class="h-p">{-# LANGUAGE UnboxedSums, UnboxedTuples, UnliftedDatatypes #-}</span>
+<span class="h-k">import</span> <span class="h-t">GHC</span>.<span class="h-t">Exts</span>
+
+<span class="h-c">-- An unboxed sum: a Maybe Int that never touches the heap.</span>
+<span class="h-k">type</span> <span class="h-t">Quotient</span> = (# (# #) | <span class="h-t">Int</span># #)
+
+divide :: <span class="h-t">Int</span># -&gt; <span class="h-t">Int</span># -&gt; <span class="h-t">Quotient</span>
+divide _ <span class="h-n">0</span># = (# (# #) | #)
+divide n d = (# | quotInt# n d #)
+
+<span class="h-c">-- An unlifted data type: a list that is never a thunk.</span>
+<span class="h-k">type</span> <span class="h-t">Strict</span> :: <span class="h-t">UnliftedType</span>
+<span class="h-k">data</span> <span class="h-t">Strict</span> = <span class="h-t">Nil</span> | <span class="h-t">Cons</span> <span class="h-t">Int</span># <span class="h-t">Strict</span>
+
+<span class="h-c">-- The result can have any runtime representation: r is a variable.</span>
+orElse :: <span class="h-k">forall</span> r (b :: <span class="h-t">TYPE</span> r). <span class="h-t">Quotient</span> -&gt; (<span class="h-t">Int</span># -&gt; b) -&gt; ((# #) -&gt; b) -&gt; b
+orElse (# | n #) some _ = some n
+orElse (# (# #) | #) _ none = none (# #)
+
+<span class="h-c">-- A class over every representation, not only over boxed values.</span>
+<span class="h-k">type</span> <span class="h-t">Render</span> :: <span class="h-k">forall</span> (r :: <span class="h-t">RuntimeRep</span>). <span class="h-t">TYPE</span> r -&gt; <span class="h-t">Constraint</span>
+<span class="h-k">class</span> <span class="h-t">Render</span> (a :: <span class="h-t">TYPE</span> r) <span class="h-k">where</span> render :: a -&gt; <span class="h-t">String</span>
+<span class="h-k">instance</span> <span class="h-t">Render</span> <span class="h-t">Int</span># <span class="h-k">where</span> render n = show (<span class="h-t">I</span># n) ++ <span class="h-s">"#"</span>
+<span class="h-k">instance</span> <span class="h-t">Render</span> <span class="h-t">Double</span># <span class="h-k">where</span> render x = show (<span class="h-t">D</span># x) ++ <span class="h-s">"##"</span>
+<span class="h-k">instance</span> <span class="h-t">Render</span> <span class="h-t">Quotient</span> <span class="h-k">where</span>
+  render q = orElse q (\n -&gt; <span class="h-s">"(# | "</span> ++ render n ++ <span class="h-s">" #)"</span>) (\_ -&gt; <span class="h-s">"(# (# #) | #)"</span>)
+<span class="h-k">instance</span> <span class="h-t">Render</span> (# <span class="h-t">Int</span>#, <span class="h-t">Double</span># #) <span class="h-k">where</span>
+  render (# n, x #) = <span class="h-s">"(# "</span> ++ render n ++ <span class="h-s">", "</span> ++ render x ++ <span class="h-s">" #)"</span>
+<span class="h-k">instance</span> <span class="h-t">Render</span> <span class="h-t">Strict</span> <span class="h-k">where</span>
+  render <span class="h-t">Nil</span> = <span class="h-s">"Nil"</span>
+  render (<span class="h-t">Cons</span> n rest) = render n ++ <span class="h-s">" : "</span> ++ render rest
+
+main :: <span class="h-t">IO</span> ()
+main = <span class="h-k">do</span>
+  putStrLn (render (divide <span class="h-n">84</span># <span class="h-n">2</span>#))
+  putStrLn (render (divide <span class="h-n">1</span># <span class="h-n">0</span>#))
+  <span class="h-c">-- One function, three representations: registers, a double, a pointer.</span>
+  putStrLn (render (orElse (divide <span class="h-n">9</span># <span class="h-n">2</span>#) (\n -&gt; (# n, sqrtDouble# <span class="h-n">2.0</span>## #))
+                                          (\_ -&gt; (# <span class="h-n">0</span>#, <span class="h-n">0.0</span>## #))))
+  putStrLn (render (orElse (divide <span class="h-n">9</span># <span class="h-n">2</span>#) int2Double# (\_ -&gt; <span class="h-n">0.0</span>##)))
+  putStrLn (render (orElse (divide <span class="h-n">9</span># <span class="h-n">0</span>#) (\n -&gt; <span class="h-t">Cons</span> n <span class="h-t">Nil</span>)
+                                          (\_ -&gt; <span class="h-t">Cons</span> <span class="h-n">1</span># (<span class="h-t">Cons</span> <span class="h-n">2</span># <span class="h-t">Nil</span>))))</code></pre>
+          <div class="example-run">
+            <p class="example-note">AIHC follows GHC down to the machine: unboxed sums, unlifted data, and code that is polymorphic in the runtime representation. GHC 9.12 prints the same output.</p>
+            <pre class="example-out"><code><span class="t-prompt">%</span> aihc build unboxed.hs
+<span class="t-prompt">%</span> ./unboxed
+<span class="example-stdout">(# | 42# #)
+(# (# #) | #)
+(# 4#, 1.4142135623730951## #)
+4.0##
+1# : 2# : Nil</span></code></pre>
           </div>
         </div>
       </div>
