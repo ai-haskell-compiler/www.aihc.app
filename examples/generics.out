@@ -1,0 +1,1 @@
+{"name": "AIHC", "selfHosting": true, "targets": [{"triple": "x86_64-linux", "bits": 64}, {"triple": "aarch64-darwin", "bits": 64}, {"triple": "wasm32", "bits": 32}], "successor": null}

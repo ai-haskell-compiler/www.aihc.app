@@ -435,6 +435,8 @@ h2 { font-size: clamp(2.1rem, 4.6vw, 3.3rem); max-width: 22ch; }
 @media (min-width: 60rem) { .example-run { border-top: 0; border-left: 1px solid var(--term-rule); border-radius: 0 0 0.9rem 0; } }
 .example-note { padding: 1.25rem 1.4rem 0; font-size: 0.9rem; line-height: 1.55; color: var(--term-dim); }
 .example pre.example-out { white-space: pre-wrap; overflow-wrap: anywhere; padding-bottom: 3.4rem; }
+/* For output that is a picture: scroll and do not wrap. */
+.example pre.example-nowrap { white-space: pre; overflow-wrap: normal; overflow-x: auto; }
 .example-stdout { color: #fff; }
 .example .copy { bottom: 0.9rem; background: none; }
 .h-k { color: var(--term-accent); }

@@ -180,6 +180,8 @@ cabal list-bin exe:aihc</code></pre>
         <button role="tab" id="tab-ex-gadts" aria-controls="panel-ex-gadts">GADTs</button>
         <button role="tab" id="tab-ex-threads" aria-controls="panel-ex-threads">Green threads</button>
         <button role="tab" id="tab-ex-unboxed" aria-controls="panel-ex-unboxed">Unboxed types</button>
+        <button role="tab" id="tab-ex-generics" aria-controls="panel-ex-generics">Generics</button>
+        <button role="tab" id="tab-ex-mandelbrot" aria-controls="panel-ex-mandelbrot">Mandelbrot</button>
       </div>
       <div class="panel example" role="tabpanel" id="panel-ex-lazy" aria-labelledby="tab-ex-lazy" data-example="lazy">
         <h3>Lazy lists</h3>
@@ -350,6 +352,116 @@ main = <span class="h-k">do</span>
 (# 4#, 1.4142135623730951## #)
 4.0##
 1# : 2# : Nil</span></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="panel example" role="tabpanel" id="panel-ex-generics" aria-labelledby="tab-ex-generics" data-example="generics">
+        <h3>Generics</h3>
+        <div class="example-grid">
+          <pre class="example-code"><code><span class="h-p">{-# LANGUAGE DefaultSignatures, DeriveAnyClass, DeriveGeneric #-}</span>
+<span class="h-p">{-# LANGUAGE FlexibleContexts, TypeOperators #-}</span>
+<span class="h-k">import</span> <span class="h-t">Data</span>.<span class="h-t">List</span> (intercalate)
+<span class="h-k">import</span> <span class="h-t">GHC</span>.<span class="h-t">Generics</span>
+
+<span class="h-c">-- Turn a value into JSON. The default works for every record type.</span>
+<span class="h-k">class</span> <span class="h-t">ToJSON</span> a <span class="h-k">where</span>
+  toJSON :: a -&gt; <span class="h-t">String</span>
+  <span class="h-k">default</span> toJSON :: (<span class="h-t">Generic</span> a, <span class="h-t">Fields</span> (<span class="h-t">Rep</span> a)) =&gt; a -&gt; <span class="h-t">String</span>
+  toJSON x = <span class="h-s">"{"</span> ++ intercalate <span class="h-s">", "</span> (fields (from x)) ++ <span class="h-s">"}"</span>
+
+<span class="h-k">instance</span> <span class="h-t">ToJSON</span> <span class="h-t">Int</span> <span class="h-k">where</span> toJSON = show
+<span class="h-k">instance</span> <span class="h-t">ToJSON</span> <span class="h-t">Bool</span> <span class="h-k">where</span> toJSON b = <span class="h-k">if</span> b <span class="h-k">then</span> <span class="h-s">"true"</span> <span class="h-k">else</span> <span class="h-s">"false"</span>
+<span class="h-k">instance</span> <span class="h-p">{-# OVERLAPPING #-}</span> <span class="h-t">ToJSON</span> <span class="h-t">String</span> <span class="h-k">where</span> toJSON = show
+<span class="h-k">instance</span> <span class="h-t">ToJSON</span> a =&gt; <span class="h-t">ToJSON</span> [a] <span class="h-k">where</span>
+  toJSON xs = <span class="h-s">"["</span> ++ intercalate <span class="h-s">", "</span> (map toJSON xs) ++ <span class="h-s">"]"</span>
+<span class="h-k">instance</span> <span class="h-t">ToJSON</span> a =&gt; <span class="h-t">ToJSON</span> (<span class="h-t">Maybe</span> a) <span class="h-k">where</span> toJSON = maybe <span class="h-s">"null"</span> toJSON
+
+<span class="h-c">-- Walk the generic representation of a record and collect its fields.</span>
+<span class="h-k">class</span> <span class="h-t">Fields</span> f <span class="h-k">where</span> fields :: f p -&gt; [<span class="h-t">String</span>]
+<span class="h-k">instance</span> <span class="h-t">Fields</span> f =&gt; <span class="h-t">Fields</span> (<span class="h-t">D1</span> c f) <span class="h-k">where</span> fields (<span class="h-t">M1</span> x) = fields x
+<span class="h-k">instance</span> <span class="h-t">Fields</span> f =&gt; <span class="h-t">Fields</span> (<span class="h-t">C1</span> c f) <span class="h-k">where</span> fields (<span class="h-t">M1</span> x) = fields x
+<span class="h-k">instance</span> (<span class="h-t">Fields</span> f, <span class="h-t">Fields</span> g) =&gt; <span class="h-t">Fields</span> (f :*: g) <span class="h-k">where</span>
+  fields (x :*: y) = fields x ++ fields y
+<span class="h-k">instance</span> (<span class="h-t">Selector</span> s, <span class="h-t">ToJSON</span> a) =&gt; <span class="h-t">Fields</span> (<span class="h-t">S1</span> s (<span class="h-t">K1</span> i a)) <span class="h-k">where</span>
+  fields field@(<span class="h-t">M1</span> (<span class="h-t">K1</span> x)) = [show (selName field) ++ <span class="h-s">": "</span> ++ toJSON x]
+
+<span class="h-c">-- No encoder is written for these types. The compiler derives it.</span>
+<span class="h-k">data</span> <span class="h-t">Target</span> = <span class="h-t">Target</span> { triple :: <span class="h-t">String</span>, bits :: <span class="h-t">Int</span> }
+  <span class="h-k">deriving</span> (<span class="h-t">Generic</span>, <span class="h-t">ToJSON</span>)
+
+<span class="h-k">data</span> <span class="h-t">Compiler</span> = <span class="h-t">Compiler</span>
+  { name :: <span class="h-t">String</span>, selfHosting :: <span class="h-t">Bool</span>, targets :: [<span class="h-t">Target</span>]
+  , successor :: <span class="h-t">Maybe</span> <span class="h-t">String</span> }
+  <span class="h-k">deriving</span> (<span class="h-t">Generic</span>, <span class="h-t">ToJSON</span>)
+
+main :: <span class="h-t">IO</span> ()
+main = putStrLn (toJSON aihc)
+  <span class="h-k">where</span>
+    aihc = <span class="h-t">Compiler</span> <span class="h-s">"AIHC"</span> <span class="h-t">True</span>
+      [<span class="h-t">Target</span> <span class="h-s">"x86_64-linux"</span> <span class="h-n">64</span>, <span class="h-t">Target</span> <span class="h-s">"aarch64-darwin"</span> <span class="h-n">64</span>, <span class="h-t">Target</span> <span class="h-s">"wasm32"</span> <span class="h-n">32</span>]
+      <span class="h-t">Nothing</span></code></pre>
+          <div class="example-run">
+            <p class="example-note">One generic function encodes every record as JSON. This is the mechanism that libraries such as aeson use, and AIHC derives the representation as GHC does.</p>
+            <pre class="example-out"><code><span class="t-prompt">%</span> aihc build generics.hs
+<span class="t-prompt">%</span> ./generics
+<span class="example-stdout">{"name": "AIHC", "selfHosting": true, "targets": [{"triple": "x86_64-linux", "bits": 64}, {"triple": "aarch64-darwin", "bits": 64}, {"triple": "wasm32", "bits": 32}], "successor": null}</span></code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="panel example" role="tabpanel" id="panel-ex-mandelbrot" aria-labelledby="tab-ex-mandelbrot" data-example="mandelbrot">
+        <h3>Mandelbrot</h3>
+        <div class="example-grid">
+          <pre class="example-code"><code><span class="h-c">-- The Mandelbrot set. Change the size or the center and press Run.</span>
+width, height, limit :: <span class="h-t">Int</span>
+width = <span class="h-n">40</span>
+height = <span class="h-n">17</span>
+limit = <span class="h-n">60</span>
+
+<span class="h-c">-- How many steps the point c takes to leave the circle of radius 2.</span>
+escape :: <span class="h-t">Double</span> -&gt; <span class="h-t">Double</span> -&gt; <span class="h-t">Int</span>
+escape cr ci = go <span class="h-n">0</span> <span class="h-n">0</span> <span class="h-n">0</span>
+  <span class="h-k">where</span>
+    go :: <span class="h-t">Double</span> -&gt; <span class="h-t">Double</span> -&gt; <span class="h-t">Int</span> -&gt; <span class="h-t">Int</span>
+    go x y n
+      | n == limit || x * x + y * y &gt; <span class="h-n">4</span> = n
+      | otherwise = go (x * x - y * y + cr) (<span class="h-n">2</span> * x * y + ci) (n + <span class="h-n">1</span>)
+
+<span class="h-c">-- A point that stays is inside the set. Outside, the steps make bands.</span>
+shade :: <span class="h-t">Int</span> -&gt; <span class="h-t">Char</span>
+shade n
+  | n == limit = <span class="h-s">'#'</span>
+  | otherwise = <span class="h-s">"  ..,::;=+*%"</span> !! min n <span class="h-n">11</span>
+
+<span class="h-c">-- Map the column i and the row j to a point of the plane.</span>
+pixel :: <span class="h-t">Int</span> -&gt; <span class="h-t">Int</span> -&gt; <span class="h-t">Char</span>
+pixel j i = shade (escape (along i width (-<span class="h-n">2.1</span>) <span class="h-n">0.9</span>) (along j height (-<span class="h-n">1.2</span>) <span class="h-n">1.2</span>))
+  <span class="h-k">where</span>
+    along k size low high =
+      low + (high - low) * fromIntegral k / fromIntegral (size - <span class="h-n">1</span>)
+
+main :: <span class="h-t">IO</span> ()
+main = mapM_ putStrLn [[pixel j i | i &lt;- [<span class="h-n">0</span> .. width - <span class="h-n">1</span>]] | j &lt;- [<span class="h-n">0</span> .. height - <span class="h-n">1</span>]]</code></pre>
+          <div class="example-run">
+            <p class="example-note">A tight loop over machine doubles. Edit the size or the limit and run it again: the compiler and the program both run in your browser.</p>
+            <pre class="example-out example-nowrap"><code><span class="t-prompt">%</span> aihc build mandelbrot.hs
+<span class="t-prompt">%</span> ./mandelbrot
+<span class="example-stdout">       .................................
+      ..............,,,::%::,,,.........
+     ............,,,,,::;%%=::,,,.......
+    ...........,,,,:::;=%##%=::::,......
+   ..........,,::::=%#########%%%:,.....
+  .......,,::::::;+#############*::,....
+  ..,,,,:::*%%%%+*###############=:,....
+  ,,,,:::%+%#####################;:,,...
+  #############################%=::,,...
+  ,,,,:::%+%#####################;:,,...
+  ..,,,,:::*%%%%+*###############=:,....
+  .......,,::::::;+#############*::,....
+   ..........,,::::=%#########%%%:,.....
+    ...........,,,,:::;=%##%=::::,......
+     ............,,,,,::;%%=::,,,.......
+      ..............,,,::%::,,,.........
+       .................................</span></code></pre>
           </div>
         </div>
       </div>
