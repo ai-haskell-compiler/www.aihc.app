@@ -21,7 +21,7 @@ const end = "<!-- examples:end -->";
 const examples = JSON.parse(await readFile(join(root, "examples/index.json"), "utf8"));
 const tabs = [];
 const panels = [];
-for (const { id, title, note } of examples) {
+for (const { id, title, note, wrap = true } of examples) {
   const source = (await readFile(join(root, "examples", id + ".hs"), "utf8")).trimEnd();
   const output = (await readFile(join(root, "examples", id + ".out"), "utf8")).trimEnd();
   tabs.push(`        <button role="tab" id="tab-ex-${id}" aria-controls="panel-ex-${id}">${escape(title)}</button>`);
@@ -31,7 +31,7 @@ for (const { id, title, note } of examples) {
           <pre class="example-code"><code>${highlight(source)}</code></pre>
           <div class="example-run">
             <p class="example-note">${escape(note)}</p>
-            <pre class="example-out"><code><span class="t-prompt">%</span> aihc build ${id}.hs
+            <pre class="example-out${wrap ? "" : " example-nowrap"}"><code><span class="t-prompt">%</span> aihc build ${id}.hs
 <span class="t-prompt">%</span> ./${id}
 <span class="example-stdout">${escape(output)}</span></code></pre>
           </div>
