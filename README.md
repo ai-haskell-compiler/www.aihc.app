@@ -46,7 +46,21 @@ The first command compiles and runs each program and saves its output.
 The second colors the sources and writes the markup into `public/index.html`.
 Do not edit that markup by hand.
 The workflow fails when the page is out of date, or when the pinned release of aihc prints different output.
-Use only the core libraries in an example, so that it can also run in the browser later.
+Use only the core libraries in an example, because the compiler in the browser has no other library.
+
+## The live examples
+
+A visitor can edit an example and run it in the browser.
+`public/playground.mjs` does this with the [AIHC web kit](https://github.com/ai-haskell-compiler/aihc/blob/main/web-kit/README.md), which each release of aihc publishes at `https://assets.aihc.app/play/releases/<version>/`.
+The page downloads nothing from the kit until the visitor edits or runs a program.
+An edit downloads the type checker, about 6 MB.
+A run downloads the full compiler, about 53 MB.
+A browser without JavaScript Promise Integration shows the recorded output only.
+
+To move to a new release of aihc, change the version in two places:
+
+- `KIT` in `public/playground.mjs`.
+- `AIHC_VERSION` and `AIHC_SHA256` in `.github/workflows/deploy.yml`.
 
 ## Updating the numbers
 

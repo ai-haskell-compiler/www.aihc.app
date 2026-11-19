@@ -126,6 +126,11 @@ for (const box of document.querySelectorAll('[data-tabs]')) {
   }
 }
 
+// Let the visitor edit and run the examples. The compiler needs JavaScript Promise Integration.
+if (document.querySelector('[data-example]') && typeof WebAssembly === 'object' && typeof WebAssembly.Suspending === 'function') {
+  import('/playground.mjs').catch(() => {});
+}
+
 // Show the newest release in the download commands. The page ships with a known-good version.
 const versions = document.querySelectorAll('[data-version]');
 if (versions.length) {
