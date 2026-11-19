@@ -44,6 +44,14 @@ for (const card of document.querySelectorAll('.card, .link-card')) {
   });
 }
 
+// Rest the illustrations while they are off screen.
+if ('IntersectionObserver' in window) {
+  const stage = new IntersectionObserver(entries => {
+    for (const entry of entries) entry.target.classList.toggle('paused', !entry.isIntersecting);
+  });
+  document.querySelectorAll('.machine, .robot-scene').forEach(el => stage.observe(el));
+}
+
 // Type the terminal session.
 const term = document.getElementById('term');
 if (term && !calm) {

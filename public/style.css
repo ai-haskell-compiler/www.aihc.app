@@ -166,7 +166,7 @@ h1 em, h2 em { font-style: italic; color: var(--accent); }
 }
 
 /* Hero */
-.hero { position: relative; isolation: isolate; padding: clamp(3.5rem, 9vw, 7rem) 0 clamp(3.5rem, 8vw, 6rem); }
+.hero { position: relative; isolation: isolate; padding: clamp(3.5rem, 9vw, 7rem) 0 0; }
 .hero-bg { position: absolute; inset: -4rem 0 0; z-index: -1; overflow: hidden; pointer-events: none; }
 .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.9; will-change: transform; }
 .blob-a { width: 38rem; height: 38rem; left: -10rem; top: -14rem; background: radial-gradient(circle, var(--glow-2), transparent 65%); animation: drift-a 18s ease-in-out infinite alternate; }
@@ -191,23 +191,18 @@ h1 em, h2 em { font-style: italic; color: var(--accent); }
 .hero-copy > * { animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 .hero-copy > :nth-child(2) { animation-delay: 0.08s; }
 .hero-copy > :nth-child(3) { animation-delay: 0.16s; }
-.hero-copy > :nth-child(4) { animation-delay: 0.24s; }
 .terminal { animation: rise 0.9s 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 @keyframes rise { from { opacity: 0; transform: translateY(1.2rem); } }
 
-.eyebrow, .kicker {
+.kicker {
   font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
-}
-.eyebrow {
-  display: inline-flex; align-items: center; gap: 0.6rem;
-  padding: 0.4rem 0.85rem; border-radius: 99px;
-  background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
-  margin-bottom: 1.5rem;
 }
 .pulse { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 var(--good); animation: pulse 2.2s infinite; flex: none; }
 @keyframes pulse { 70% { box-shadow: 0 0 0 0.5rem transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
 
-h1 { font-size: clamp(2.9rem, 7.2vw, 5.2rem); }
+h1 { font-size: clamp(2.6rem, 6.2vw, 4.5rem); }
+h1 span, h1 em { display: block; white-space: nowrap; }
+h1 em { width: fit-content; }
 h1 em {
   background: linear-gradient(100deg, var(--accent-strong), var(--accent) 45%, var(--accent-strong) 90%);
   background-size: 200% 100%;
@@ -259,6 +254,101 @@ h1 em {
 .t-caret { display: inline-block; width: 0.55em; height: 1.1em; vertical-align: text-bottom; background: var(--term-accent); animation: blink 1.1s steps(2) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 .js .terminal .t-line.t-hidden { visibility: hidden; }
+
+/* The machine: Haskell rides in on the left, binary rides out on the right. */
+/* Clipped sideways only, so the steam can rise past the top of the strip. */
+.machine { margin-top: clamp(2.5rem, 6vw, 4.5rem); height: clamp(9.5rem, 17vw, 13rem); overflow-x: clip; }
+.machine svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.machine svg, .robot { fill: none; stroke: var(--ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.machine text, .robot text { stroke: none; text-anchor: middle; }
+.m-legs { stroke: var(--faint); stroke-width: 2; }
+.m-belt { fill: var(--surface); stroke-width: 2; }
+.m-belt-dash { stroke: var(--faint); stroke-width: 2; stroke-dasharray: 3 37; animation: belt 1.25s linear infinite; }
+.m-in, .m-out { animation: convey 40s linear infinite; }
+.m-in text { font: 500 21px var(--mono); fill: var(--muted); }
+.m-in text.hot { fill: var(--accent); }
+.m-out rect { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.m-out text { font: 600 14px var(--mono); fill: var(--accent); }
+.m-box { animation: chug 0.5s ease-in-out infinite alternate; }
+.m-body, .m-part { fill: var(--surface); }
+.m-part { fill: var(--surface-2); }
+.m-slot { stroke: var(--ink); stroke-width: 5; stroke-linecap: butt; }
+.m-foot { stroke-width: 6; }
+.m-label { font: 500 50px var(--serif); letter-spacing: 0.04em; fill: var(--ink); }
+.m-vent { stroke: var(--faint); stroke-width: 2; }
+.m-gauge circle { fill: var(--bg); stroke-width: 2; }
+.m-needle { stroke: var(--accent); transform-box: fill-box; transform-origin: 50% 100%; animation: needle 2.6s ease-in-out infinite alternate; }
+.m-lights circle { stroke-width: 1.5; fill: var(--good); animation: lamp 1.8s steps(1) infinite; }
+.m-lights circle:nth-child(2) { animation-delay: 0.6s; }
+.m-lights circle:nth-child(3) { animation-delay: 1.2s; }
+.m-rivets circle { fill: var(--faint); stroke: none; }
+.m-gear { fill: var(--surface-2); animation: spin 6s linear infinite; }
+.m-gear circle, .gear circle:not(.ring) { fill: var(--ink); stroke: none; }
+.m-puffs circle { fill: var(--surface); stroke: var(--faint); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; animation: puff 3s ease-out infinite; }
+.m-puffs circle:nth-child(2) { animation-delay: 1s; }
+.m-puffs circle:nth-child(3) { animation-delay: 2s; }
+@keyframes convey { to { transform: translateX(1280px); } }
+@keyframes belt { to { stroke-dashoffset: -40; } }
+@keyframes chug { to { transform: translateY(-1.5px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes needle { from { transform: rotate(-50deg); } to { transform: rotate(55deg); } }
+@keyframes lamp { 0% { fill: var(--good); } 34% { fill: var(--surface-2); } }
+@keyframes puff {
+  0% { opacity: 0; transform: translate(0, 6px) scale(0.5); }
+  20% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(14px, -30px) scale(1.7); }
+}
+.paused, .paused * { animation-play-state: paused !important; }
+
+/* The robot. One registered angle drives the crank, the gears and the arm,
+   so they cannot drift apart. Without @property support the scene sits still. */
+@property --crank { syntax: '<angle>'; inherits: true; initial-value: 0deg; }
+.robot-scene { min-width: 0; }
+.robot {
+  display: block; width: 100%; max-width: 27rem; margin: 0 auto; overflow: visible;
+  --dx: calc(80 + 26 * cos(var(--crank)));
+  --dy: calc(10 + 26 * sin(var(--crank)));
+  --reach: atan2(var(--dy), var(--dx));
+  animation: crank 4.8s linear infinite;
+}
+@keyframes crank { to { --crank: 360deg; } }
+.r-ground { stroke: var(--rule); }
+.r-stand { stroke: var(--faint); stroke-width: 5; }
+.gear { fill: var(--surface); }
+.gear .ring { stroke: var(--rule); stroke-width: 2; }
+.gear .crank { stroke-width: 5; }
+.gear-a { transform: rotate(var(--crank)); }
+.gear-b { transform: rotate(calc(22.5deg - var(--crank) * 1.5)); }
+.gear-c { transform: rotate(calc(30deg + var(--crank) * 2)); fill: var(--accent-soft); }
+.arm-sleeve { transform: rotate(var(--reach)); }
+.arm-sleeve rect { fill: var(--surface-2); }
+.arm-rod { transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) rotate(var(--reach)); }
+.arm-rod path { stroke-width: 6; }
+.arm-rod circle { fill: var(--accent); }
+.r-arm-idle { transform-box: fill-box; transform-origin: 100% 0; animation: sway 2.4s ease-in-out infinite alternate; }
+.r-arm-idle path:first-child { stroke-width: 6; }
+.r-legs { stroke-width: 6; }
+.r-feet, .r-ears, .r-neck { fill: var(--surface-2); }
+.r-body, .r-skull { fill: var(--surface); }
+.r-panel { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 2; }
+.r-lambda { font: italic 500 24px var(--serif); fill: var(--accent); }
+.r-vent { stroke: var(--faint); stroke-width: 2; }
+.r-heart { fill: var(--good); stroke-width: 1.5; animation: lamp 1.6s steps(1) infinite; }
+.r-joint { fill: var(--surface-2); }
+.r-head { transform: translateY(calc(sin(var(--crank)) * 2.5px)) rotate(calc(cos(var(--crank)) * 2deg)); transform-origin: 136px 150px; }
+.r-bulb { fill: var(--accent); animation: glow 1.2s ease-in-out infinite alternate; }
+.r-eyes circle { fill: var(--accent); stroke: none; transform-box: fill-box; transform-origin: center; animation: blink-eyes 5s infinite; }
+.r-sparks text { font: italic 500 18px var(--serif); fill: var(--accent); opacity: 0; animation: spark 3.6s ease-out infinite; }
+.r-sparks text:nth-child(2) { animation-delay: 1.2s; }
+.r-sparks text:nth-child(3) { animation-delay: 2.4s; }
+@keyframes sway { from { transform: rotate(-5deg); } to { transform: rotate(7deg); } }
+@keyframes glow { to { fill: var(--accent-soft); } }
+@keyframes blink-eyes { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+@keyframes spark {
+  0% { opacity: 0; transform: translate(0, 8px) rotate(0deg); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate(22px, -34px) rotate(25deg); }
+}
 
 /* Sections */
 .section { padding: clamp(4rem, 9vw, 7rem) 0; position: relative; }
@@ -378,7 +468,10 @@ h2 { font-size: clamp(2.1rem, 4.6vw, 3.3rem); max-width: 22ch; }
 .split h2 { margin-bottom: 1.5rem; }
 .split > div > p:not(.kicker) { color: var(--muted); font-size: 1.1rem; max-width: 36rem; }
 .split > div > p + p { margin-top: 1rem; }
-.status { padding: 1.75rem; }
+.status { padding: 1.75rem; margin-top: clamp(2.5rem, 5vw, 4rem); }
+@media (min-width: 56rem) {
+  .status-body { display: grid; grid-template-columns: 1fr 1fr; gap: 0 2.5rem; }
+}
 .status-head { display: flex; align-items: center; gap: 0.6rem; font-weight: 650; margin-bottom: 0.9rem; }
 .status-head .pulse { background: #e0a020; animation-name: pulse-warn; }
 @keyframes pulse-warn { 0% { box-shadow: 0 0 0 0 #e0a020; } 70%, 100% { box-shadow: 0 0 0 0.5rem transparent; } }

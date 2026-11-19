@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AIHC · The AI-written Haskell compiler</title>
-<meta name="description" content="AIHC is a Haskell compiler written by AI agents under human direction. It compiles GHC-flavoured Haskell to native code, LLVM IR and WebAssembly, and it compiles itself.">
+<title>AIHC · Fast builds, small binaries, real Haskell</title>
+<meta name="description" content="AIHC is a self-hosting Haskell compiler with fast builds and small executables. It compiles GHC-flavoured Haskell to native code, LLVM IR and WebAssembly. Written by AI agents under human direction.">
 <link rel="canonical" href="https://aihc.app/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://aihc.app/">
-<meta property="og:title" content="AIHC · The AI-written Haskell compiler">
-<meta property="og:description" content="A modern, self-hosting Haskell compiler. It targets native machine code, LLVM IR and WebAssembly.">
+<meta property="og:title" content="AIHC · Fast builds, small binaries, real Haskell">
+<meta property="og:description" content="A self-hosting Haskell compiler with fast builds and small executables. It targets native machine code, LLVM IR and WebAssembly.">
 <meta name="theme-color" content="#151318" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#faf8f3" media="(prefers-color-scheme: light)">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -35,7 +35,7 @@
           </g>
         </svg>
       </span>
-      <span class="brand-name">AI Haskell Compiler</span>
+      <span class="brand-name">AIHC</span>
     </a>
     <nav aria-label="Primary">
       <a href="#install">Install</a>
@@ -61,9 +61,8 @@
   </div>
   <div class="wrap hero-inner">
     <div class="hero-copy">
-      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>Self-hosting since 2026</p>
-      <h1>A Haskell compiler, <em>written by AI.</em></h1>
-      <p class="lede">AIHC is a modern, self-hosting Haskell compiler. It targets native machine code, LLVM IR and WebAssembly.</p>
+      <h1><span>Fast builds.</span> <span>Small binaries.</span> <em>Real Haskell.</em></h1>
+      <p class="lede">AIHC is a self-hosting Haskell compiler. It targets native machine code, LLVM IR and WebAssembly.</p>
       <div class="cta">
         <a class="btn btn-primary" href="#install">Install AIHC</a>
         <a class="btn btn-ghost" href="https://docs.aihc.app/">Read the manual</a>
@@ -82,6 +81,37 @@
 <span class="t-line t-out t-hello">Hello, world!</span>
 <span class="t-line t-last"><span class="t-prompt">%</span> <span class="t-caret"></span></span></code></pre>
     </div>
+  </div>
+  <div class="machine" role="img" aria-label="Illustration: snippets of Haskell ride a conveyor belt into a box labelled AIHC, and tidy blocks of binary come out the other side.">
+    <svg viewBox="0 0 2400 224" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+      <defs>
+        <path id="gear-12" d="M37.1 -5.7L45.9 -3.4L45.9 3.4L37.1 5.7L34.9 13.6L41.4 20.0L38.0 25.9L29.3 23.4L23.4 29.3L25.9 38.0L20.0 41.4L13.6 34.9L5.7 37.1L3.4 45.9L-3.4 45.9L-5.7 37.1L-13.6 34.9L-20.0 41.4L-25.9 38.0L-23.4 29.3L-29.3 23.4L-38.0 25.9L-41.4 20.0L-34.9 13.6L-37.1 5.7L-45.9 3.4L-45.9 -3.4L-37.1 -5.7L-34.9 -13.6L-41.4 -20.0L-38.0 -25.9L-29.3 -23.4L-23.4 -29.3L-25.9 -38.0L-20.0 -41.4L-13.6 -34.9L-5.7 -37.1L-3.4 -45.9L3.4 -45.9L5.7 -37.1L13.6 -34.9L20.0 -41.4L25.9 -38.0L23.4 -29.3L29.3 -23.4L38.0 -25.9L41.4 -20.0L34.9 -13.6Z"/>
+        <path id="gear-8" d="M22.9 -5.3L31.8 -3.5L31.8 3.5L22.9 5.3L19.9 12.4L25.0 20.0L20.0 25.0L12.4 19.9L5.3 22.9L3.5 31.8L-3.5 31.8L-5.3 22.9L-12.4 19.9L-20.0 25.0L-25.0 20.0L-19.9 12.4L-22.9 5.3L-31.8 3.5L-31.8 -3.5L-22.9 -5.3L-19.9 -12.4L-25.0 -20.0L-20.0 -25.0L-12.4 -19.9L-5.3 -22.9L-3.5 -31.8L3.5 -31.8L5.3 -22.9L12.4 -19.9L20.0 -25.0L25.0 -20.0L19.9 -12.4Z"/>
+        <path id="gear-6" d="M15.7 -4.9L24.7 -3.7L24.7 3.7L15.7 4.9L12.1 11.2L15.5 19.6L9.2 23.2L3.6 16.1L-3.6 16.1L-9.2 23.2L-15.5 19.6L-12.1 11.2L-15.7 4.9L-24.7 3.7L-24.7 -3.7L-15.7 -4.9L-12.1 -11.2L-15.5 -19.6L-9.2 -23.2L-3.6 -16.1L3.6 -16.1L9.2 -23.2L15.5 -19.6L12.1 -11.2Z"/>
+        <clipPath id="belt-in"><rect x="0" y="0" width="1080" height="224"/></clipPath>
+        <clipPath id="belt-out"><rect x="1322" y="0" width="1078" height="224"/></clipPath>
+      </defs>
+      <path class="m-legs" d="M80 188V230M240 188V230M400 188V230M560 188V230M720 188V230M880 188V230M1040 188V230M1360 188V230M1520 188V230M1680 188V230M1840 188V230M2000 188V230M2160 188V230M2320 188V230"/>
+      <path class="m-belt" d="M-10 177H2410V188H-10Z"/>
+      <path class="m-belt-dash" d="M-40 182.5H2440"/>
+      <g clip-path="url(#belt-in)"><g class="m-in"><g><text x="-60" y="170" transform="rotate(-4 -60 170)">map f xs</text><text x="100" y="170" transform="rotate(3 100 170)" class="hot">λx → x</text><text x="260" y="170" transform="rotate(-6 260 170)">&gt;&gt;=</text><text x="420" y="170" transform="rotate(2 420 170)">where</text><text x="580" y="170" transform="rotate(-3 580 170)" class="hot">Maybe a</text><text x="740" y="170" transform="rotate(5 740 170)">foldr</text><text x="900" y="170" transform="rotate(-5 900 170)" class="hot">&lt;$&gt;</text><text x="1060" y="170" transform="rotate(3 1060 170)">data T</text></g><g transform="translate(-1280)"><text x="-60" y="170" transform="rotate(-4 -60 170)">map f xs</text><text x="100" y="170" transform="rotate(3 100 170)" class="hot">λx → x</text><text x="260" y="170" transform="rotate(-6 260 170)">&gt;&gt;=</text><text x="420" y="170" transform="rotate(2 420 170)">where</text><text x="580" y="170" transform="rotate(-3 580 170)" class="hot">Maybe a</text><text x="740" y="170" transform="rotate(5 740 170)">foldr</text><text x="900" y="170" transform="rotate(-5 900 170)" class="hot">&lt;$&gt;</text><text x="1060" y="170" transform="rotate(3 1060 170)">data T</text></g></g></g>
+      <g clip-path="url(#belt-out)"><g class="m-out"><g><g transform="translate(1350 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01100001</text></g><g transform="translate(1510 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01101001</text></g><g transform="translate(1670 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01101000</text></g><g transform="translate(1830 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01100011</text></g><g transform="translate(1990 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01100001</text></g><g transform="translate(2150 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01101001</text></g><g transform="translate(2310 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01101000</text></g><g transform="translate(2470 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01100011</text></g></g><g transform="translate(-1280)"><g transform="translate(1350 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01100001</text></g><g transform="translate(1510 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01101001</text></g><g transform="translate(1670 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01101000</text></g><g transform="translate(1830 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01100011</text></g><g transform="translate(1990 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01100001</text></g><g transform="translate(2150 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01101001</text></g><g transform="translate(2310 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01101000</text></g><g transform="translate(2470 144)"><rect width="100" height="30" rx="7"/><text x="50" y="20.5">01100011</text></g></g></g></g>
+      <g class="m-puffs"><circle cx="1262" cy="22" r="7"/><circle cx="1262" cy="22" r="7"/><circle cx="1262" cy="22" r="7"/></g>
+      <g transform="translate(1132 50)"><g class="m-gear"><use href="#gear-8"/><circle r="7"/></g></g>
+      <g class="m-box">
+        <path class="m-part" d="M1250 50V28H1274V50"/>
+        <path class="m-part" d="M1092 112L1060 98V177H1092Z"/>
+        <path class="m-part" d="M1308 128L1334 138V177H1308Z"/>
+        <path class="m-foot" d="M1104 202V214M1296 202V214"/>
+        <rect class="m-body" x="1090" y="50" width="220" height="152" rx="16"/>
+        <path class="m-slot" d="M1090 124V177M1310 138V177"/>
+        <text class="m-label" x="1200" y="124">AIHC</text>
+        <g class="m-gauge"><circle cx="1130" cy="160" r="15"/><path class="m-needle" d="M1130 160V149"/></g>
+        <path class="m-vent" d="M1164 152H1232M1164 160H1232M1164 168H1232"/>
+        <g class="m-lights"><circle cx="1252" cy="160" r="5"/><circle cx="1269" cy="160" r="5"/><circle cx="1286" cy="160" r="5"/></g>
+        <g class="m-rivets"><circle cx="1104" cy="64" r="2"/><circle cx="1296" cy="64" r="2"/><circle cx="1104" cy="188" r="2"/><circle cx="1296" cy="188" r="2"/></g>
+      </g>
+    </svg>
   </div>
 </section>
 
@@ -241,17 +271,54 @@ cabal list-bin exe:aihc</code></pre>
 </section>
 
 <section class="section" id="how">
-  <div class="wrap split">
+  <div class="wrap">
+  <div class="split">
     <div>
       <p class="kicker reveal">How it's made</p>
-      <h2 class="reveal">Designed by a human. <em>Typed by robots.</em></h2>
+      <h2 class="reveal">Designed by a human. <em>Cranked out by robots.</em></h2>
       <p class="reveal">A person holds the architecture and reviews every change. AI agents write the code: ChatGPT, Claude Opus and Qwen-Coder all contribute. They also write the tests, the benchmarks, the design documents and the blog.</p>
       <p class="reveal">The first commit landed in March 2026. Seven months later the compiler built itself.</p>
     </div>
+    <div class="robot-scene reveal" role="img" aria-label="Illustration: a small robot turns a crank that drives a train of gears.">
+      <svg class="robot" viewBox="20 40 360 236" aria-hidden="true" focusable="false">
+        <path class="r-ground" d="M40 263H366"/>
+        <path class="r-stand" d="M256 182V263M326 133V263M236 263H346"/>
+        <g class="r-sparks"><text x="326" y="100">λ</text><text x="326" y="100">λ</text><text x="326" y="100">λ</text></g>
+        <g transform="translate(326 133)"><g class="gear gear-c"><use href="#gear-6"/><circle r="5"/></g></g>
+        <g transform="translate(326 182)"><g class="gear gear-b"><use href="#gear-8"/><circle r="6"/></g></g>
+        <g transform="translate(256 182)"><g class="gear gear-a"><use href="#gear-12"/><circle class="ring" r="27"/><circle r="7"/><path class="crank" d="M0 0H26"/></g></g>
+        <g transform="translate(176 172)">
+          <g class="arm-rod"><path d="M0 0H-52"/><circle r="7.5"/></g>
+          <g class="arm-sleeve"><rect x="-7" y="-7" width="63" height="14" rx="7"/></g>
+        </g>
+        <g class="r-arm-idle"><path d="M98 174L84 208"/><path class="claw" d="M78 208a6 6 0 0 0 12 0"/></g>
+        <path class="r-legs" d="M118 232V252M154 232V252"/>
+        <path class="r-feet" d="M106 252H128V262H106ZM144 252H166V262H144Z"/>
+        <rect class="r-body" x="96" y="150" width="80" height="82" rx="14"/>
+        <rect class="r-panel" x="112" y="166" width="48" height="32" rx="6"/>
+        <text class="r-lambda" x="136" y="190">λ</text>
+        <path class="r-vent" d="M116 212H140M116 219H140"/>
+        <circle class="r-heart" cx="153" cy="215" r="4"/>
+        <circle class="r-joint" cx="176" cy="172" r="9"/>
+        <circle class="r-joint" cx="98" cy="172" r="7"/>
+        <g class="r-head">
+          <path class="r-neck" d="M128 140H144V152H128Z"/>
+          <path class="r-antenna" d="M136 92V76"/>
+          <circle class="r-bulb" cx="136" cy="71" r="5"/>
+          <path class="r-ears" d="M98 108H104V126H98ZM168 108H174V126H168Z"/>
+          <rect class="r-skull" x="104" y="92" width="64" height="50" rx="13"/>
+          <g class="r-eyes"><circle cx="124" cy="114" r="6"/><circle cx="148" cy="114" r="6"/></g>
+          <path class="r-mouth" d="M126 130H146"/>
+        </g>
+      </svg>
+    </div>
+  </div>
     <aside class="status reveal" aria-label="Project status">
       <p class="status-head"><span class="pulse" aria-hidden="true"></span>Under construction</p>
-      <p>AIHC builds many Hackage packages, but not all of them. The <code>base</code> library is about half complete, and some language extensions are still missing.</p>
-      <p>The status tables in the README regenerate on every merge, so the numbers there are always current.</p>
+      <div class="status-body">
+        <p>AIHC builds many Hackage packages, but not all of them. The <code>base</code> library is about half complete, and some language extensions are still missing.</p>
+        <p>The status tables in the README regenerate on every merge, so the numbers there are always current.</p>
+      </div>
       <a class="arrow-link" href="https://github.com/ai-haskell-compiler/aihc#readme">See today's progress <span aria-hidden="true">→</span></a>
     </aside>
   </div>
