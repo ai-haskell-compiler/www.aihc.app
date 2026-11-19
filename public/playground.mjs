@@ -19,8 +19,29 @@ const compiler = () =>
       throw error;
     }));
 
-// The first build in a new worker is slow, because the engine optimizes the compiler while it runs.
+// The first build in a new worker is slow: the code generator of the compiler
+// takes some seconds to start. prewarm pays this before the visitor presses
+// Run. It sends a program to the code generator only, which needs the front
+// end but not the assembler and the linker.
 let warm = false;
+let warming = false;
+let sample = "";
+function prewarm() {
+  if (warming || !sample) return;
+  warming = true;
+  compiler()
+    .then((aihc) => aihc.request("compile", sample))
+    .then(() => {
+      warm = true;
+    })
+    .catch(() => {
+      warming = false;
+    });
+}
+
+// The last programs that were built, by source. A second run does not build again.
+const built = new Map();
+const BUILT_LIMIT = 12;
 
 const megabytes = (bytes) => `${Math.round(bytes / 1e6)} MB`;
 const prompt = '<span class="t-prompt">%</span> ';
@@ -53,6 +74,8 @@ async function showDownload() {
   try {
     const { missing } = await (await compiler()).downloadSize();
     if (missing > 1e6) text += ` The first run downloads ${megabytes(missing)}.`;
+    // This browser has the compiler already, so starting it downloads nothing.
+    else prewarm();
   } catch {}
   for (const hint of hints) hint.textContent = text;
 }
@@ -62,6 +85,7 @@ function setup(panel) {
   const view = panel.querySelector(".example-code");
   const out = panel.querySelector(".example-out code");
   const original = view.textContent.trimEnd();
+  sample ||= original + "\n";
   const recorded = panel.querySelector(".example-stdout").textContent;
 
   // The text area lies over the colored source and has transparent text.
@@ -147,6 +171,8 @@ function setup(panel) {
       state.diagnostics = result.ok ? [] : result.diagnostics;
       state.phase = result.ok ? "edited" : "errors";
       render();
+      // The front end is here now. Start the code generator after the first answer.
+      prewarm();
     } catch {
       // The Run button reports a kit that does not load.
     }
@@ -182,18 +208,24 @@ function setup(panel) {
     render();
     try {
       const aihc = await compiler();
-      const { missing } = await aihc.downloadSize();
-      const first = missing > 1e6 ? `The first run downloads ${megabytes(missing)}. ` : "";
-      const built = await aihc.compile(source, {
-        onStatus: (status) => {
-          state.status = first + status + (warm ? "" : " The first build takes some seconds.");
-          render();
-        },
-      });
-      warm = true;
-      if (!built.ok) {
-        Object.assign(state, { phase: "errors", diagnostics: built.diagnostics });
-        return;
+      let program = built.get(source);
+      if (!program) {
+        const { missing } = await aihc.downloadSize();
+        const first = missing > 1e6 ? `The first run downloads ${megabytes(missing)}. ` : "";
+        const result = await aihc.compile(source, {
+          onStatus: (status) => {
+            state.status = first + status + (warm ? "" : " The first build takes some seconds.");
+            render();
+          },
+        });
+        warm = warming = true;
+        if (!result.ok) {
+          Object.assign(state, { phase: "errors", diagnostics: result.diagnostics });
+          return;
+        }
+        program = result.program;
+        if (built.size >= BUILT_LIMIT) built.delete(built.keys().next().value);
+        built.set(source, program);
       }
       Object.assign(state, { phase: "ran", diagnostics: [], output: "" });
       abort = new AbortController();
@@ -210,7 +242,7 @@ function setup(panel) {
         out.querySelector(".example-stdout").append(text);
       };
       render();
-      const { exitCode } = await aihc.run(built.program, { onStdout: print, onStderr: print, signal: abort.signal });
+      const { exitCode } = await aihc.run(program, { onStdout: print, onStderr: print, signal: abort.signal });
       if (exitCode) state.tail = `[exit code ${exitCode}]`;
     } catch (error) {
       if (error?.name === "AbortError" && state.phase === "ran") state.tail ||= "[stopped]";
