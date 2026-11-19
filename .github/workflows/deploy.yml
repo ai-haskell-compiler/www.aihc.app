@@ -10,6 +10,33 @@ concurrency:
   group: ${{ github.event_name == 'pull_request' && format('check-{0}', github.ref) || 'production-deployment' }}
   cancel-in-progress: false
 jobs:
+  # The page shows example programs with their output. This job checks that
+  # the page has the current examples, and that aihc still prints that output.
+  examples:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      AIHC_VERSION: "0.2.0"
+      AIHC_SHA256: 35d3745aa8fcc4322e3d9e369b765cc8190d0dc76df65d3dbe6819ee695cfa92
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check that the page has the current examples
+        run: node scripts/examples.mjs --check
+
+      - name: Download aihc
+        run: |
+          set -euo pipefail
+          archive="aihc-$AIHC_VERSION-linux-amd64.tar.gz"
+          curl --fail --location --silent --show-error --output "$RUNNER_TEMP/$archive" \
+            "https://github.com/ai-haskell-compiler/aihc/releases/download/v$AIHC_VERSION/$archive"
+          echo "$AIHC_SHA256  $RUNNER_TEMP/$archive" | sha256sum --check
+          tar -C "$RUNNER_TEMP" -xzf "$RUNNER_TEMP/$archive"
+          echo "AIHC=$RUNNER_TEMP/aihc-$AIHC_VERSION-linux-amd64/aihc" >>"$GITHUB_ENV"
+
+      - name: Run the examples
+        run: scripts/run-examples.sh
+
   deploy:
     runs-on: ubuntu-latest
     steps:

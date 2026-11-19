@@ -394,6 +394,26 @@ h2 { font-size: clamp(2.1rem, 4.6vw, 3.3rem); max-width: 22ch; }
 }
 .copy:hover { color: var(--term-ink); border-color: var(--term-accent); }
 
+/* Examples. The markup comes from scripts/examples.mjs. */
+.examples { margin-top: 3rem; }
+.example { padding: 0; }
+.example-grid { display: grid; }
+@media (min-width: 60rem) { .example-grid { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); } }
+.example pre { font-size: clamp(0.72rem, 1.35vw, 0.82rem); line-height: 1.7; padding: 1.25rem 1.4rem; }
+.example-code { overflow-x: auto; }
+.example-run { display: flex; flex-direction: column; min-width: 0; border-top: 1px solid var(--term-rule); background: color-mix(in srgb, #000 22%, var(--term-bg)); border-radius: 0 0 0.9rem 0.9rem; }
+@media (min-width: 60rem) { .example-run { border-top: 0; border-left: 1px solid var(--term-rule); border-radius: 0 0 0.9rem 0; } }
+.example-note { padding: 1.25rem 1.4rem 0; font-size: 0.9rem; line-height: 1.55; color: var(--term-dim); }
+.example pre.example-out { white-space: pre-wrap; overflow-wrap: anywhere; padding-bottom: 3.4rem; }
+.example-stdout { color: #fff; }
+.example .copy { bottom: 0.9rem; background: none; }
+.h-k { color: var(--term-accent); }
+.h-t { color: #e6c48f; }
+.h-s { color: #9fd6a3; }
+.h-n { color: #f0a8a0; }
+.h-c, .h-p { color: var(--term-dim); }
+.h-c { font-style: italic; }
+
 /* Feature cards */
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 1rem; margin-top: 3rem; }
 .card, .meter, .link-card, .status {
