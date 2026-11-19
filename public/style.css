@@ -424,6 +424,13 @@ h2 { font-size: clamp(2.1rem, 4.6vw, 3.3rem); max-width: 22ch; }
 .example-actions button:disabled { opacity: 0.5; cursor: default; filter: none; }
 .example-hint { font-size: 0.78rem; color: var(--term-dim); }
 .example-err { color: #f0a8a0; }
+.example-spin {
+  display: inline-block; width: 0.8em; height: 0.8em; margin-right: 0.6em; vertical-align: -0.08em;
+  border: 2px solid color-mix(in srgb, var(--term-accent) 30%, transparent); border-top-color: var(--term-accent); border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+.example-running .example-spin { margin: 0; }
+.example-elapsed { font-variant-numeric: tabular-nums; opacity: 0.75; }
 .example-run { display: flex; flex-direction: column; min-width: 0; border-top: 1px solid var(--term-rule); background: color-mix(in srgb, #000 22%, var(--term-bg)); border-radius: 0 0 0.9rem 0.9rem; }
 @media (min-width: 60rem) { .example-run { border-top: 0; border-left: 1px solid var(--term-rule); border-radius: 0 0 0.9rem 0; } }
 .example-note { padding: 1.25rem 1.4rem 0; font-size: 0.9rem; line-height: 1.55; color: var(--term-dim); }
