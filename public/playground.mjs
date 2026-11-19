@@ -43,6 +43,9 @@ function prewarm() {
 const built = new Map();
 const BUILT_LIMIT = 12;
 
+// A spinner that keeps its angle when the markup around it is written again.
+const spinner = () => `<span class="example-spin" style="animation-delay:-${Math.round(performance.now() % 900)}ms"></span>`;
+
 const megabytes = (bytes) => `${Math.round(bytes / 1e6)} MB`;
 const prompt = '<span class="t-prompt">%</span> ';
 
@@ -130,6 +133,10 @@ function setup(panel) {
   let turn = 0;
   let timer;
   let abort;
+  let checking = false;
+  let since = 0;
+  let clock;
+  const elapsed = () => `${Math.floor((performance.now() - since) / 1000)} s`;
 
   const render = () => {
     const source = input.value;
@@ -140,21 +147,26 @@ function setup(panel) {
     under.innerHTML = marks(source, state.phase === "building" ? [] : state.diagnostics) + last;
     let html = "";
     if (state.phase === "edited") {
-      html = '<span class="t-dim">The program changed. Press Run to build it.</span>';
+      html = `<span class="t-dim">${checking ? spinner() + "Check the program." : "The program changed. Press Run to build it."}</span>`;
     } else {
       html = `${prompt}aihc build ${id}.hs\n`;
       if (state.phase === "errors") {
         const text = state.diagnostics.map((d) => (d.line ? `${id}.hs:${d.line}:${d.col}: ` : "") + d.message.trimEnd()).join("\n\n");
         html += `<span class="example-err">${escape(text)}</span>`;
+        if (checking) html += `\n\n<span class="t-dim">${spinner()}Check the program.</span>`;
       } else if (state.phase === "recorded" || state.phase === "ran") {
         html += `${prompt}./${id}\n<span class="example-stdout">${escape(state.output)}</span>`;
+        if (abort) html += `<span class="t-dim example-running">${spinner()}</span>`;
         if (state.tail) html += `<span class="t-dim">${state.output && !state.output.endsWith("\n") ? "\n" : ""}${escape(state.tail)}</span>`;
       } else {
-        html += `<span class="${state.phase === "failed" ? "example-err" : "t-dim"}">${escape(state.status)}</span>`;
+        const building = state.phase === "building";
+        html += `<span class="${building ? "t-dim" : "example-err"}">${building ? spinner() : ""}${escape(state.status)}`;
+        if (building) html += ` <span class="example-elapsed">${elapsed()}</span>`;
+        html += "</span>";
       }
     }
     out.innerHTML = html;
-    run.textContent = abort ? "Stop" : "Run";
+    run.textContent = abort ? "Stop" : state.phase === "building" ? "Building" : "Run";
     run.disabled = state.phase === "building";
     input.readOnly = Boolean(busy);
     reset.hidden = source === original && state.phase === "recorded";
@@ -168,6 +180,7 @@ function setup(panel) {
     try {
       const result = await (await compiler()).check(source + "\n");
       if (mine !== turn) return;
+      checking = false;
       state.diagnostics = result.ok ? [] : result.diagnostics;
       state.phase = result.ok ? "edited" : "errors";
       render();
@@ -175,6 +188,10 @@ function setup(panel) {
       prewarm();
     } catch {
       // The Run button reports a kit that does not load.
+      if (mine === turn) {
+        checking = false;
+        render();
+      }
     }
   };
 
@@ -182,6 +199,7 @@ function setup(panel) {
     turn++;
     clearTimeout(timer);
     state.tail = "";
+    checking = input.value !== original;
     if (input.value === original) {
       Object.assign(state, { phase: "recorded", diagnostics: [], output: recorded });
     } else {
@@ -194,6 +212,7 @@ function setup(panel) {
   reset.addEventListener("click", () => {
     turn++;
     clearTimeout(timer);
+    checking = false;
     input.value = original;
     Object.assign(state, { phase: "recorded", diagnostics: [], output: recorded, tail: "" });
     render();
@@ -204,6 +223,13 @@ function setup(panel) {
     turn++;
     clearTimeout(timer);
     const source = input.value + "\n";
+    checking = false;
+    since = performance.now();
+    // The seconds count up while the build runs, so a slow step does not look stuck.
+    clock = setInterval(() => {
+      const seconds = out.querySelector(".example-elapsed");
+      if (seconds) seconds.textContent = elapsed();
+    }, 250);
     Object.assign(state, { phase: "building", status: "Start the compiler.", tail: "" });
     render();
     try {
@@ -248,6 +274,7 @@ function setup(panel) {
       if (error?.name === "AbortError" && state.phase === "ran") state.tail ||= "[stopped]";
       else Object.assign(state, { phase: "failed", status: `The compiler did not run in this browser. ${error?.message ?? error}` });
     } finally {
+      clearInterval(clock);
       abort = undefined;
       render();
       showDownload();
