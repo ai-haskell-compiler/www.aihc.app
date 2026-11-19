@@ -1,0 +1,5 @@
+[
+  { "id": "lazy", "title": "Lazy lists", "note": "Infinite lists are ordinary values. The program computes only the part that it prints." },
+  { "id": "gadts", "title": "GADTs", "note": "AIHC accepts the extensions of GHC. Here the type of an expression says what it evaluates to." },
+  { "id": "threads", "title": "Green threads", "note": "The runtime schedules lightweight threads across cores. An MVar carries results and guards shared state." }
+]

@@ -114,15 +114,21 @@ for (const box of document.querySelectorAll('[data-tabs]')) {
       const button = document.createElement('button');
       button.className = 'copy';
       button.type = 'button';
-      button.textContent = 'Copy';
+      const label = panel.classList.contains('example') ? 'Copy code' : 'Copy';
+      button.textContent = label;
       button.addEventListener('click', async () => {
         await navigator.clipboard.writeText(panel.querySelector('pre').textContent.trim() + '\n');
         button.textContent = 'Copied';
-        setTimeout(() => { button.textContent = 'Copy'; }, 1600);
+        setTimeout(() => { button.textContent = label; }, 1600);
       });
       panel.prepend(button);
     }
   }
+}
+
+// Let the visitor edit and run the examples. The compiler needs JavaScript Promise Integration.
+if (document.querySelector('[data-example]') && typeof WebAssembly === 'object' && typeof WebAssembly.Suspending === 'function') {
+  import('/playground.mjs').catch(() => {});
 }
 
 // Show the newest release in the download commands. The page ships with a known-good version.
